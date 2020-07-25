@@ -1,0 +1,14 @@
+ {
+     "images/land.png" : [
+         {
+            "name" : "grass",
+            "topLeft" : [0, 0],
+            "size" : [32, 32]
+         }, 
+         {
+            "name" : "dirt",
+            "topLeft" : [32, 0],
+            "size" : [32, 32]
+         }
+     ]
+ }

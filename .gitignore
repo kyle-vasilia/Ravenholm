@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+*.o
+*.obj
+
+*.dll
+
+bin/Ravenholm.exe
+
+bin/shader/Windows/basic_frag.bin
+
+bin/shader/Windows/basic_vert.bin
+
+dub.selections.json
