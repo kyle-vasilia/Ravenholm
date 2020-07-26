@@ -13,3 +13,7 @@ bin/shader/Windows/basic_frag.bin
 bin/shader/Windows/basic_vert.bin
 
 dub.selections.json
+
+bin/shader/Windows/basic_tex_frag.bin
+
+bin/shader/Windows/basic_tex_vert.bin

@@ -14,7 +14,8 @@ struct PosTexVertex {
     float x;
     float y;
     float z;
-    ushort texCoord;
+    float texCoord_x;
+    float texCoord_y;
     static bgfx_vertex_layout_t format;
 } 
 
@@ -40,7 +41,7 @@ void formatVertices() {
         false, false);
     bgfx_vertex_layout_add(&PosTexVertex.format,
         bgfx_attrib_t.BGFX_ATTRIB_TEXCOORD0,
-        2, bgfx_attrib_type_t.BGFX_ATTRIB_TYPE_INT16, 
-        true, false);
+        2, bgfx_attrib_type_t.BGFX_ATTRIB_TYPE_FLOAT, 
+        false, false);
     bgfx_vertex_layout_end(&PosTexVertex.format);
 }

@@ -25,9 +25,7 @@ void loadOntoWindow(SDL_Window *win) {
         pd.ndt = wInfo.info.x11.display;
         pd.nwh = cast(uint*)wInfo.info.x11.window;
     }
-    pd.context = null;
-    pd.backBuffer = null;
-    pd.backBufferDS = null;
+ 
 
     bgfx_set_platform_data(&pd);
     
@@ -82,20 +80,24 @@ bgfx_shader_handle_t loadShader(string name) {
 } 
 
 bgfx_texture_handle_t loadTexture(string name) {
+    import std.string : toStringz;
     import imageformats : IFImage, read_image, ColFmt;
-
+    
     IFImage img = read_image(name, ColFmt.RGB);
 
-    const bgfx_memory_t *mem = bgfx_make_ref(img.pixels.ptr, img.pixels.sizeof);
+    const bgfx_memory_t *mem = bgfx_make_ref(img.pixels.ptr, img.w * img.h * 3);
+
+    bgfx_texture_handle_t handle = 
+        bgfx_create_texture_2d(cast(ushort)img.w, cast(ushort)img.h, false, 1, 
+        bgfx_texture_format_t.BGFX_TEXTURE_FORMAT_RGB8, BGFX_SAMPLER_NONE | BGFX_TEXTURE_NONE, mem);
+
+    bgfx_set_texture_name(handle, toStringz(name), cast(int)name.length);
+    return handle;
     
-    return bgfx_texture_handle_t();
-
-
-
 }
 
 void refreshWindow(SDL_Window *win) {
-    
+
     int x;
     int y;
 
