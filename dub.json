@@ -9,5 +9,6 @@
 	"targetName": "Ravenholm",
 	"targetPath": "bin",
 	"targetType": "executable",
+	"workingDirectory": "bin",
 	"sourcePaths": ["source"]
 }

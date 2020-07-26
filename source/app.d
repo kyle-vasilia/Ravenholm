@@ -2,10 +2,26 @@ import std.stdio;
 
 import bindbc.bgfx;
 import bindbc.sdl;
-import util.core;
+
+import graphics.util;
+import graphics.format;
 
 static ushort width = 900;
 static ushort height = 600;
+
+
+static immutable PosColorVertex[] quad = [
+    {   0.5f,  0.5f, 0.0f,  rgba : 0xff0000ff},
+    {   0.5f, -0.5f, 0.0f,  rgba : 0xff0000ff},
+    {  -0.5f, -0.5f, 0.0f,  rgba : 0xff0000ff},
+    {  -0.5f,  0.5f, 0.0f,  rgba : 0xff0000ff}
+];
+
+
+static const Uint16[] index = [
+    0, 1, 3,  
+    1, 2, 3
+];
 
 void main() {
     loadExternalLibraries();
@@ -17,20 +33,42 @@ void main() {
     
     loadOntoWindow(win);
 
-     scope(exit) {
+   
+
+    formatVertices();
+    
+    bgfx_vertex_buffer_handle_t vbo = bgfx_create_vertex_buffer(
+        bgfx_make_ref(quad.ptr, quad.length * PosColorVertex.sizeof),
+        &PosColorVertex.format,
+        0
+    );
+
+    bgfx_index_buffer_handle_t ibo = bgfx_create_index_buffer(
+        bgfx_make_ref(index.ptr, index.sizeof),
+        0
+    );
+    
+    bgfx_shader_handle_t vs = loadShader("basic_vert.bin");
+    bgfx_shader_handle_t fs = loadShader("basic_frag.bin");
+    
+    bgfx_program_handle_t program = bgfx_create_program(vs, fs, true);
+
+
+
+
+
+    scope(exit) {
+        bgfx_destroy_vertex_buffer(vbo);
+        bgfx_destroy_index_buffer(ibo);
+        bgfx_destroy_program(program);
+
         bgfx_shutdown();
         SDL_DestroyWindow(win);
         SDL_Quit();
     }
+    
 
-
-    bgfx_reset(900, 600, BGFX_RESET_VSYNC,
-        bgfx_texture_format_t.BGFX_TEXTURE_FORMAT_RGBA32U);
-    bgfx_set_view_clear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
-        0x303030ff, 1.0f, 0);
-    bgfx_set_view_rect(0,0,0,width,height);
-    bgfx_touch(0);
-
+    refreshWindow(win);
     
     bool running = true;
     SDL_Event e;
@@ -39,6 +77,17 @@ void main() {
             if(e.type == SDL_QUIT) running = false;
         }
         bgfx_touch(0);
+
+        bgfx_set_vertex_buffer(0, vbo, 0, 4);
+        bgfx_set_index_buffer(ibo, 0, 6);
+
+        ulong state = 0 
+            | BGFX_STATE_WRITE_R 
+            | BGFX_STATE_WRITE_G
+            | BGFX_STATE_WRITE_B 
+            | BGFX_STATE_WRITE_A;
+        bgfx_set_state(state, 0);
+        bgfx_submit(0, program, 0, 0);
         bgfx_frame(false);
     }
 
