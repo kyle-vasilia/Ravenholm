@@ -48,7 +48,7 @@ void main() {
     
     loadOntoWindow(win);
 
-   
+    
 
     formatVertices();
     
@@ -59,7 +59,7 @@ void main() {
     );
 
     bgfx_index_buffer_handle_t ibo = bgfx_create_index_buffer(
-        bgfx_make_ref(index.ptr, index.sizeof),
+        bgfx_make_ref(index.ptr, ushort.sizeof * 36),
         0
     );
     
@@ -89,17 +89,22 @@ void main() {
     
     bool running = true;
     SDL_Event e;
+
+    import std.math;
+
+    float a = 0.0f;
+
     while(running) {
         while(SDL_PollEvent(&e)) {
             if(e.type == SDL_QUIT) running = false;
         }
 
-         float z = 5.0f;
-        z -= 1.0f;
-        mat4f view = mat4f.lookAt(vec3f(z, 3.0f, -10.0), 
+        import std.stdio;
+        a += 0.016f;
+        mat4x4f view = mat4f.lookAt(vec3f(cos(a) * 10, 4.0f, sin(a) * 10), 
                     vec3f(0.0f, 0.0f, 0.0f), 
                     vec3f(0.0f, 1.0f, 0.0f)).transposed();
-        mat4f perspective = mat4f.perspective(radians!float(70.0f), 
+        mat4x4f perspective = mat4x4f.perspective(radians!float(70.0f), 
             cast(float)width/cast(float)height, 0.1f, 100.0f).transposed();
         
         bgfx_set_view_transform(0, view.ptr, perspective.ptr);
@@ -111,12 +116,19 @@ void main() {
 
         bgfx_set_texture(0, texUniform, tex, BGFX_SAMPLER_NONE | BGFX_TEXTURE_NONE);
 
-
-
-       
    
-        bgfx_set_state(BGFX_STATE_DEFAULT, 0);
-        bgfx_submit(0, program, 0, 0);
+        bgfx_set_state(BGFX_STATE_WRITE_R
+				| BGFX_STATE_WRITE_G
+				| BGFX_STATE_WRITE_B
+				| BGFX_STATE_WRITE_A
+				| BGFX_STATE_WRITE_Z
+				| BGFX_STATE_DEPTH_TEST_LESS
+				| BGFX_STATE_CULL_CCW
+				| BGFX_STATE_MSAA, 0);
+
+
+
+        bgfx_submit(0, program, 0, 36);
         bgfx_frame(false);
     }
 

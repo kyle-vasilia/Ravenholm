@@ -10,5 +10,6 @@
 	"targetPath": "bin",
 	"targetType": "executable",
 	"workingDirectory": "bin",
-	"sourcePaths": ["source"]
+	"sourcePaths": ["source"],
+	"preBuildCommands": ["make"]
 }
