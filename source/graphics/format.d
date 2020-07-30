@@ -3,19 +3,19 @@ import bindbc.bgfx;
 
 
 struct PosColorVertex {
-    float x;
-    float y;
-    float z;
-    uint rgba; 
+    float x = 0.0f;
+    float y = 0.0f;
+    float z = 0.0f;
+    uint rgba = 0x00000000f; 
     static bgfx_vertex_layout_t format;
 } 
 
 struct PosTexVertex {
-    float x;
-    float y;
-    float z;
-    float texCoord_x;
-    float texCoord_y;
+    float x = 0.0f;
+    float y = 0.0f;
+    float z = 0.0f;
+    float texCoord_x = 0.0f;
+    float texCoord_y = 0.0f;
     static bgfx_vertex_layout_t format;
 } 
 
