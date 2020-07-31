@@ -86,10 +86,7 @@ void main() {
         bgfx_touch(0);
 
 
-        bgfx_set_vertex_buffer(0, chunk.gpuVertexData, 0, (tileSize * tileSize) * 4);
-        bgfx_set_index_buffer(chunk.gpuIndexData, 0, (tileSize * tileSize) * 6);
-
-        
+       
 
         bgfx_set_texture(0, texUniform, tex, BGFX_SAMPLER_NONE | BGFX_TEXTURE_NONE);
 
@@ -103,9 +100,7 @@ void main() {
                 | BGFX_STATE_CULL_CCW
 				| BGFX_STATE_MSAA, 0);
 
-
-
-        bgfx_submit(0, program, 0, 32);
+        chunk.draw(program);
         bgfx_frame(false);
     }
 
