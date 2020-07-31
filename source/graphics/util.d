@@ -103,7 +103,7 @@ void refreshWindow(SDL_Window *win) {
 
     SDL_GetWindowSize(win, &x, &y);
 
-    bgfx_reset(900, 600, BGFX_RESET_VSYNC,
+    bgfx_reset(cast(ushort)x, cast(ushort)y, BGFX_RESET_VSYNC,
         bgfx_texture_format_t.BGFX_TEXTURE_FORMAT_RGBA32U);
     bgfx_set_view_clear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
         0x303030ff, 1.0f, 0);

@@ -75,8 +75,8 @@ void main() {
 
         import std.stdio;
         a += 0.016f;
-        mat4x4f view = mat4f.lookAt(vec3f(cos(a) * 10, 4.0f, sin(a) * 10), 
-                    vec3f(0.5f, 0.0f, 0.5f), 
+        mat4x4f view = mat4f.lookAt(vec3f(32.0f + cos(a) * 10, 4.0f, 32.0f + sin(a) * 10), 
+                    vec3f(32.0f, 0.0f, 32.0f), 
                     vec3f(0.0f, 1.0f, 0.0f)).transposed();
         mat4x4f perspective = mat4x4f.perspective(radians!float(70.0f), 
             cast(float)width/cast(float)height, 0.1f, 100.0f).transposed();
