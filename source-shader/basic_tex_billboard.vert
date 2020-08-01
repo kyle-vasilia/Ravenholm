@@ -8,9 +8,15 @@ $output v_texcoord0
 
 #include "shared/common.sh"
 
+uniform vec4 u_billboardCenter[4096];
+
 void main()
-{	
-	gl_Position = mul(u_modelViewProj, vec4(a_position.xyz, 1.0));
+{
+	
+	vec3 cameraRight = vec3(u_view[0][0], u_view[1][0], u_view[2][0]);
+	vec3 cameraUp = vec3(u_view[0][1], u_view[1][1], u_view[2][1]);
+	
+	gl_Position = vec4(u_billboardCenter[0].xyz, 1.0);
 	v_texcoord0 = a_texcoord0;
 }
   

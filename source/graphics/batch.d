@@ -5,6 +5,7 @@ import bindbc.bgfx;
 import graphics.format : PosTexVertex;
 import graphics.tile : Tile;
 import graphics.wall : Wall;
+import graphics.billboard : Billboard;
 
 struct Batch {
 
@@ -69,6 +70,12 @@ struct Batch {
             PosTexVertex(wall.pos.x + 1, 1, wall.pos.y + 0,     0.5, 0),
             PosTexVertex(wall.pos.x + 1, 0, wall.pos.y + 0,     0.5, 1),
             PosTexVertex(wall.pos.x + 1, 0, wall.pos.y + 1,     1.0, 1),
+
+
+            PosTexVertex(wall.pos.x + 0, 1, wall.pos.y + 0,     0.5, 0),
+            PosTexVertex(wall.pos.x + 0, 1, wall.pos.y + 1,     1.0, 0),
+            PosTexVertex(wall.pos.x + 0, 0, wall.pos.y + 1,     1.0, 1),
+            PosTexVertex(wall.pos.x + 0, 0, wall.pos.y + 0,     0.5, 1),
         ];
 
         cpuIndexData ~= cast(ushort[])[
@@ -82,11 +89,32 @@ struct Batch {
             iV + 8, iV + 10, iV + 11,
 
             iV + 12, iV + 13, iV + 14, 
-            iV + 12, iV + 14, iV + 15
+            iV + 12, iV + 14, iV + 15,
+
+            iV + 16, iV + 17, iV + 18, 
+            iV + 16, iV + 18, iV + 19,       
         ];
 
-        numQuads += 4;
+        numQuads += 5;
         //Bottom does not need be covered eh ;)
     }   
+
+    void add(const ref Billboard billboard) {
+        const int iV = numQuads * 4;
+        cpuVertexData ~= [
+            PosTexVertex(billboard.pos.x + 0, 0, billboard.pos.y + 0.5,     1.0, 0),
+            PosTexVertex(billboard.pos.x + 1, 0, billboard.pos.y + 0.5,     0.5, 0),
+            PosTexVertex(billboard.pos.x + 1, 1, billboard.pos.y + 0.5,     0.5, 1),
+            PosTexVertex(billboard.pos.x + 0, 1, billboard.pos.y + 0.5,     1.0, 1),
+        ];
+
+        cpuIndexData ~= cast(ushort[])[
+            iV + 0, iV + 1, iV + 2, 
+            iV + 0, iV + 2, iV + 3
+        ];
+
+        numQuads++;
+    
+    }
 
 } 

@@ -29,12 +29,21 @@ void main() {
     Chunk chunk = new Chunk;
     chunk.genBuffer();
 
-  
-    
-    bgfx_shader_handle_t vs = loadShader("basic_tex_vert.bin");
-    bgfx_shader_handle_t fs = loadShader("basic_tex_frag.bin");
-    
-    bgfx_program_handle_t program = bgfx_create_program(vs, fs, true);
+    bgfx_program_handle_t program;
+    bgfx_program_handle_t billboardProgram;
+    {
+        bgfx_shader_handle_t vs1 = loadShader("basic_tex_vert.bin");
+        bgfx_shader_handle_t fs1 = loadShader("basic_tex_frag.bin");
+        program = bgfx_create_program(vs1, fs1, true);
+    }    {
+        bgfx_shader_handle_t vs2 = loadShader("basic_tex_billboard_vert.bin");
+        bgfx_shader_handle_t fs2 = loadShader("basic_tex_billboard_frag.bin");
+        billboardProgram = bgfx_create_program(vs2, fs2, true);
+    }
+
+    chunk.centerPosHandle = bgfx_create_uniform("u_billboardCenter",
+            bgfx_uniform_type_t.BGFX_UNIFORM_TYPE_VEC4,
+            4096);
 
     auto tex = loadTexture("assets/images/land.png");
 
@@ -43,6 +52,7 @@ void main() {
     scope(exit) {
         bgfx_destroy_texture(tex);
         
+        bgfx_destroy_program(billboardProgram);
         bgfx_destroy_program(program);
 
         bgfx_shutdown();
@@ -53,7 +63,7 @@ void main() {
 
     refreshWindow(win);
     
-
+    
 
 
     import asset.loader;
@@ -100,7 +110,7 @@ void main() {
                 | BGFX_STATE_CULL_CCW
 				| BGFX_STATE_MSAA, 0);
 
-        chunk.draw(program);
+        chunk.draw(program, billboardProgram);
         bgfx_frame(false);
     }
 

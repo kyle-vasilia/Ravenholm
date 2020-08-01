@@ -17,3 +17,9 @@ dub.selections.json
 bin/shader/Windows/basic_tex_frag.bin
 
 bin/shader/Windows/basic_tex_vert.bin
+
+*.pdb
+
+*.db
+
+bin/.vs/Ravenholm/v16/.suo
