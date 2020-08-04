@@ -25,9 +25,7 @@ void main() {
 
     formatVertices();
     
-    import graphics.chunk : Chunk, tileSize;
-    Chunk chunk = new Chunk;
-    chunk.genBuffer();
+
 
     bgfx_program_handle_t program;
     bgfx_program_handle_t billboardProgram;
@@ -41,12 +39,22 @@ void main() {
         billboardProgram = bgfx_create_program(vs2, fs2, true);
     }
 
-    chunk.centerPosHandle = bgfx_create_uniform("u_billboardCenter",
-            bgfx_uniform_type_t.BGFX_UNIFORM_TYPE_VEC4,
-            4096);
+
+    import graphics.chunk : Chunk, tileSize;
+    Chunk chunk = new Chunk;
+    chunk.genBuffer();
+   // chunk.centerPosHandle = bgfx_create_uniform("u_billboardCenter",
+    //        bgfx_uniform_type_t.BGFX_UNIFORM_TYPE_VEC4,
+    //        4096);
 
     auto tex = loadTexture("assets/images/land.png");
 
+    vec4f[2] test = [
+        vec4f(1, 0.5, 0,    1),
+        vec4f(0, 1, 0,    0)
+    ];
+
+    auto testUniform = bgfx_create_uniform("u_ts", bgfx_uniform_type_t.BGFX_UNIFORM_TYPE_VEC4, 2);
     auto texUniform = bgfx_create_uniform("s_texColor", bgfx_uniform_type_t.BGFX_UNIFORM_TYPE_SAMPLER, 1);
 
     scope(exit) {
@@ -99,7 +107,7 @@ void main() {
        
 
         bgfx_set_texture(0, texUniform, tex, BGFX_SAMPLER_NONE | BGFX_TEXTURE_NONE);
-
+        bgfx_set_uniform(testUniform, &test, 2);
    
         bgfx_set_state(BGFX_STATE_WRITE_R
 				| BGFX_STATE_WRITE_G

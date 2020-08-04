@@ -2,7 +2,7 @@ module graphics.chunk;
 import bindbc.bgfx;
 import gfm.math;
 
-import graphics.format : PosTexVertex;
+import graphics.format;
 import graphics.tile;
 import graphics.wall;
 import graphics.billboard;
@@ -16,9 +16,9 @@ static const int tileSize = 64;
 
 
 class Chunk {
-    Batch billboards;
-    Batch floor; 
-    Batch walls;
+    Batch!PosNormalTexVertex billboards;
+    Batch!PosTexVertex floor; 
+    Batch!PosTexVertex walls;
 
     vec4f[] billboardCenterPositions;
     bgfx_uniform_handle_t centerPosHandle;  
@@ -59,14 +59,14 @@ class Chunk {
 
             int r = uniform(0, 50);
             if(r < 4) {
-                walls.add(w);
+                add(floor, w);
             }
             else {
                 
-                floor.add(tile);
+                add(floor, tile);
                 if(r < 10) {
-                    billboards.add(b);
-                    billboardCenterPositions[0] =  vec4f(x + 0.5, 0.5, z + 0.5, 1.0);
+                    add(billboards, b);
+             
                 }
             }
 
@@ -89,12 +89,11 @@ class Chunk {
         bgfx_set_index_buffer(walls.gpuIndexData, 0, walls.numQuads * 6);
         bgfx_submit(0, program, 0, 32);
 
-        bgfx_set_uniform(centerPosHandle, billboardCenterPositions.ptr, 4096);
+       // bgfx_set_uniform(centerPosHandle, billboardCenterPositions.ptr, 4096);
         
 
-        bgfx_set_vertex_buffer(0, billboards.gpuVertexData, 0, billboards.numQuads * 4);
-        bgfx_set_index_buffer(billboards.gpuIndexData, 0, billboards.numQuads * 6);
-        bgfx_submit(0, billboardProgram, 0, 32);
+        //bgfx_set_vertex_buffer(0, billboards.gpuVertexData, 0, billboards.numQuads * 4);
+        //bgfx_set_index_buffer(billboards.gpuIndexData, 0, billboards.numQuads * 6);
+        //bgfx_submit(0, billboardProgram, 0, 32);
     }
 }
-

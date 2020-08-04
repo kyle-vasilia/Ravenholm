@@ -1,6 +1,6 @@
 module graphics.format;
 import bindbc.bgfx;
-
+import gfm.math;
 
 struct PosColorVertex {
     float x = 0.0f;
@@ -19,6 +19,17 @@ struct PosTexVertex {
     static bgfx_vertex_layout_t format;
 } 
 
+struct PosNormalTexVertex {
+    float x = 0.0f;
+    float y = 0.0f;
+    float z = 0.0f;
+    float n_x = 0.0f;
+    float n_y = 0.0f;
+    float n_z = 0.0f;
+    float texCoord_x = 0.0f;
+    float texCoord_y = 0.0f;
+    static bgfx_vertex_layout_t format;
+}
 
 void formatVertices() {
     bgfx_vertex_layout_begin(&PosColorVertex.format, 
@@ -44,4 +55,22 @@ void formatVertices() {
         2, bgfx_attrib_type_t.BGFX_ATTRIB_TYPE_FLOAT, 
         false, false);
     bgfx_vertex_layout_end(&PosTexVertex.format);
+
+    bgfx_vertex_layout_begin(&PosNormalTexVertex.format, 
+        bgfx_renderer_type_t.BGFX_RENDERER_TYPE_NOOP);
+    bgfx_vertex_layout_add(&PosNormalTexVertex.format,
+        bgfx_attrib_t.BGFX_ATTRIB_POSITION,
+        3, bgfx_attrib_type_t.BGFX_ATTRIB_TYPE_FLOAT, 
+        false, false);
+        bgfx_vertex_layout_add(&PosNormalTexVertex.format,
+        bgfx_attrib_t.BGFX_ATTRIB_NORMAL,
+        3, bgfx_attrib_type_t.BGFX_ATTRIB_TYPE_FLOAT, 
+        false, false);
+    bgfx_vertex_layout_add(&PosNormalTexVertex.format,
+        bgfx_attrib_t.BGFX_ATTRIB_TEXCOORD0,
+        2, bgfx_attrib_type_t.BGFX_ATTRIB_TYPE_FLOAT, 
+        false, false);
+    bgfx_vertex_layout_end(&PosNormalTexVertex.format);
+
+
 }
