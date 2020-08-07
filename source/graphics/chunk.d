@@ -88,12 +88,12 @@ class Chunk {
         bgfx_set_vertex_buffer(0, walls.gpuVertexData, 0, walls.numQuads * 4);
         bgfx_set_index_buffer(walls.gpuIndexData, 0, walls.numQuads * 6);
         bgfx_submit(0, program, 0, 32);
-
+        
        // bgfx_set_uniform(centerPosHandle, billboardCenterPositions.ptr, 4096);
         
 
-        //bgfx_set_vertex_buffer(0, billboards.gpuVertexData, 0, billboards.numQuads * 4);
-        //bgfx_set_index_buffer(billboards.gpuIndexData, 0, billboards.numQuads * 6);
-        //bgfx_submit(0, billboardProgram, 0, 32);
+        bgfx_set_vertex_buffer(0, billboards.gpuVertexData, 0, billboards.numQuads * 4);
+        bgfx_set_index_buffer(billboards.gpuIndexData, 0, billboards.numQuads * 6);
+        bgfx_submit(0, billboardProgram, 0, cast(byte)BGFX_DISCARD_ALL);
     }
 }

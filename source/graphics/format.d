@@ -26,8 +26,22 @@ struct PosNormalTexVertex {
     float n_x = 0.0f;
     float n_y = 0.0f;
     float n_z = 0.0f;
+    float padding = 0.0f;
     float texCoord_x = 0.0f;
     float texCoord_y = 0.0f;
+    static bgfx_vertex_layout_t format;
+}
+
+struct XYRGBAUVVertex {
+    float x = 0.0f;
+    float y = 0.0f;
+
+    float r = 0.0f;
+    float g = 0.0f;
+    float b = 0.0f;
+
+    float u = 0.0f;
+    float v = 0.0f;
     static bgfx_vertex_layout_t format;
 }
 
@@ -64,7 +78,7 @@ void formatVertices() {
         false, false);
         bgfx_vertex_layout_add(&PosNormalTexVertex.format,
         bgfx_attrib_t.BGFX_ATTRIB_NORMAL,
-        3, bgfx_attrib_type_t.BGFX_ATTRIB_TYPE_FLOAT, 
+        4, bgfx_attrib_type_t.BGFX_ATTRIB_TYPE_FLOAT, 
         false, false);
     bgfx_vertex_layout_add(&PosNormalTexVertex.format,
         bgfx_attrib_t.BGFX_ATTRIB_TEXCOORD0,
@@ -73,4 +87,19 @@ void formatVertices() {
     bgfx_vertex_layout_end(&PosNormalTexVertex.format);
 
 
+    bgfx_vertex_layout_begin(&XYRGBAUVVertex.format,
+        bgfx_renderer_type_t.BGFX_RENDERER_TYPE_NOOP);
+    bgfx_vertex_layout_add(&XYRGBAUVVertex.format, 
+        bgfx_attrib_t.BGFX_ATTRIB_POSITION,
+        2, bgfx_attrib_type_t.BGFX_ATTRIB_TYPE_FLOAT,
+        false, false);
+    bgfx_vertex_layout_add(&XYRGBAUVVertex.format,
+        bgfx_attrib_t.BGFX_ATTRIB_COLOR0,
+        4, bgfx_attrib_type_t.BGFX_ATTRIB_TYPE_UINT8, 
+        true, true);
+     bgfx_vertex_layout_add(&XYRGBAUVVertex.format,
+        bgfx_attrib_t.BGFX_ATTRIB_TEXCOORD0,
+        2, bgfx_attrib_type_t.BGFX_ATTRIB_TYPE_FLOAT, 
+        false, false);
+    bgfx_vertex_layout_end(&XYRGBAUVVertex.format);
 }

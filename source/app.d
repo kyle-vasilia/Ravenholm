@@ -49,12 +49,7 @@ void main() {
 
     auto tex = loadTexture("assets/images/land.png");
 
-    vec4f[2] test = [
-        vec4f(1, 0.5, 0,    1),
-        vec4f(0, 1, 0,    0)
-    ];
 
-    auto testUniform = bgfx_create_uniform("u_ts", bgfx_uniform_type_t.BGFX_UNIFORM_TYPE_VEC4, 2);
     auto texUniform = bgfx_create_uniform("s_texColor", bgfx_uniform_type_t.BGFX_UNIFORM_TYPE_SAMPLER, 1);
 
     scope(exit) {
@@ -78,7 +73,7 @@ void main() {
     parseDirInfo("assets/loader");
 
 
-
+    
     bool running = true;
     SDL_Event e;
 
@@ -98,7 +93,7 @@ void main() {
                     vec3f(0.0f, 1.0f, 0.0f)).transposed();
         mat4x4f perspective = mat4x4f.perspective(radians!float(70.0f), 
             cast(float)width/cast(float)height, 0.1f, 100.0f).transposed();
-        
+    
         bgfx_set_view_transform(0, view.ptr, perspective.ptr);
 
         bgfx_touch(0);
@@ -107,8 +102,6 @@ void main() {
        
 
         bgfx_set_texture(0, texUniform, tex, BGFX_SAMPLER_NONE | BGFX_TEXTURE_NONE);
-        bgfx_set_uniform(testUniform, &test, 2);
-   
         bgfx_set_state(BGFX_STATE_WRITE_R
 				| BGFX_STATE_WRITE_G
 				| BGFX_STATE_WRITE_B

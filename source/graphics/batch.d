@@ -108,12 +108,14 @@ void add(ref Batch!PosTexVertex batch, const ref Wall wall) {
     const int iV = batch.numQuads * 4;
     import gfm.math : vec3f;
 
-    vec3f center = vec3f(billboard.pos.x + 1, 0.5, billboard.pos.y + 0.5);
+    vec3f center = vec3f(billboard.pos.x + 0.5, 0.5, billboard.pos.y + 0.5);
     batch.cpuVertexData ~= [
-        PosNormalTexVertex(billboard.pos.x + 0, 0, billboard.pos.y + 0.5, center.x, center.y, center.z,    1.0, 0),
-        PosNormalTexVertex(billboard.pos.x + 1, 0, billboard.pos.y + 0.5, center.x, center.y, center.z,    0.5, 0),
-        PosNormalTexVertex(billboard.pos.x + 1, 1, billboard.pos.y + 0.5, center.x, center.y, center.z,    0.5, 1),
-        PosNormalTexVertex(billboard.pos.x + 0, 1, billboard.pos.y + 0.5, center.x, center.y, center.z,    1.0, 1),
+        PosNormalTexVertex(billboard.pos.x + 1, 0, billboard.pos.y + 0.5, center.x, center.y, center.z, 0.0,    0.5, 0),
+        PosNormalTexVertex(billboard.pos.x + 0, 0, billboard.pos.y + 0.5, center.x, center.y, center.z, 0.0,    1.0, 0),
+        
+        
+        PosNormalTexVertex(billboard.pos.x + 0, 1, billboard.pos.y + 0.5, center.x, center.y, center.z, 0.0,    1.0, 1),
+        PosNormalTexVertex(billboard.pos.x + 1, 1, billboard.pos.y + 0.5, center.x, center.y, center.z, 0.0,    0.5, 1),
     ];
 
     batch.cpuIndexData ~= cast(ushort[])[

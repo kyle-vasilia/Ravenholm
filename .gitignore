@@ -23,3 +23,7 @@ bin/shader/Windows/basic_tex_vert.bin
 *.db
 
 bin/.vs/Ravenholm/v16/.suo
+
+bin/bin.rar
+
+imgui-d

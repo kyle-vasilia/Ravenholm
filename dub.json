@@ -1,15 +1,24 @@
 {
-	"name": "ravenholm",
 	"dependencies": {
+		"bindbc-bgfx": "~>0.4.0",
+		"bindbc-loader": "*",
+		"bindbc-nuklear" : {"path" : "bindbc-nuklear"},
+		"bindbc-sdl": "~>0.19.0",
 		"gfm": "~>8.0.3",
 		"imageformats": "~>7.0.2",
-		"bindbc-bgfx": "~>0.4.0+108",
-		"bindbc-sdl": "~>0.19.0"
+		"nanogui": "~>0.4.0"
 	},
+	"name": "ravenholm",
+	"preBuildCommands": [
+		"make"
+	],
+	"sourcePaths": [
+		"source"
+	],
 	"targetName": "Ravenholm",
 	"targetPath": "bin",
 	"targetType": "executable",
 	"workingDirectory": "bin",
-	"sourcePaths": ["source"],
-	"preBuildCommands": ["make"]
+
+	"dflags": ["-version=NK_INCLUDE_DEFAULT_ALLOCATOR"]
 }
