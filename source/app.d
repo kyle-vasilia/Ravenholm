@@ -68,6 +68,10 @@ void main() {
     
     
 
+    import ui.nuklear_impl;
+    nk_bgfx t;
+    nk_bgfx_init(t);
+
 
     import asset.loader;
     parseDirInfo("assets/loader");
@@ -85,9 +89,9 @@ void main() {
         while(SDL_PollEvent(&e)) {
             if(e.type == SDL_QUIT) running = false;
         }
-
+       
         import std.stdio;
-        a += 0.016f;
+        a += 0.040f;
         mat4x4f view = mat4f.lookAt(vec3f(32.0f + cos(a) * 10, 4.0f, 32.0f + sin(a) * 10), 
                     vec3f(32.0f, 0.0f, 32.0f), 
                     vec3f(0.0f, 1.0f, 0.0f)).transposed();
@@ -99,9 +103,22 @@ void main() {
         bgfx_touch(0);
 
 
+        import bindbc.nuklear;
+
+        if(nk_begin(&t.ctx, "Test", nk_rect(50, 50, 200, 200),
+            NK_WINDOW_MOVABLE|NK_WINDOW_BORDER)) {
+
+            
+        }
+        nk_end(&t.ctx);
+
+
+        nk_bgfx_render(t, vec2i(900, 600));
+
+
        
 
-        bgfx_set_texture(0, texUniform, tex, BGFX_SAMPLER_NONE | BGFX_TEXTURE_NONE);
+        /*bgfx_set_texture(0, texUniform, tex, BGFX_SAMPLER_NONE | BGFX_TEXTURE_NONE);
         bgfx_set_state(BGFX_STATE_WRITE_R
 				| BGFX_STATE_WRITE_G
 				| BGFX_STATE_WRITE_B
@@ -112,6 +129,8 @@ void main() {
 				| BGFX_STATE_MSAA, 0);
 
         chunk.draw(program, billboardProgram);
+        */
+
         bgfx_frame(false);
     }
 

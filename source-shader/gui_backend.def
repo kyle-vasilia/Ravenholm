@@ -1,0 +1,6 @@
+vec2 outTex : TEXCOORD0 = vec2(0.0, 0.0);
+vec4 outColor : COLOR0 = vec3(0.0, 0.0, 0.0);
+
+vec3 pos  : POSITION;
+vec2 texCoord : TEXCOORD0;
+vec4 color : COLOR0;

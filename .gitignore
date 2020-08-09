@@ -27,3 +27,9 @@ bin/.vs/Ravenholm/v16/.suo
 bin/bin.rar
 
 imgui-d
+
+bin/.vs/
+
+bin/shader/Windows/gui_backend_frag.bin
+
+bin/shader/Windows/gui_backend_vert.bin

@@ -2,12 +2,14 @@ module graphics.util;
 
 import bindbc.bgfx;
 import bindbc.sdl;
+import bindbc.nuklear;
 import core.stdc.stdio;
 
 void loadExternalLibraries() {
     import std.exception : enforce;
     enforce(loadSDL() == sdlSupport, "[ERR::DLL] Couldn't load SDL2");
     enforce(loadBgfx(), "[ERR::DLL] Couldn't load BGFX");
+    enforce(loadNuklear() == NuklearSupport.Nuklear4, "[ERR::DLL] Couldn't load Nuklear");
 }
 
 void loadOntoWindow(SDL_Window *win) {
@@ -38,6 +40,9 @@ void loadOntoWindow(SDL_Window *win) {
     init.type = bgfx_renderer_type_t.BGFX_RENDERER_TYPE_OPENGL;
     init.vendorId = BGFX_PCI_ID_NONE;
     init.resolution.reset = BGFX_RESET_VSYNC;
+
+    init.limits.transientVbSize = 10_485_760;
+    init.limits.transientIbSize = 65_533 * 2 * 4;
     bgfx_init(&init);
 
 }

@@ -36,9 +36,7 @@ struct XYRGBAUVVertex {
     float x = 0.0f;
     float y = 0.0f;
 
-    float r = 0.0f;
-    float g = 0.0f;
-    float b = 0.0f;
+    byte[4] rgba;
 
     float u = 0.0f;
     float v = 0.0f;
