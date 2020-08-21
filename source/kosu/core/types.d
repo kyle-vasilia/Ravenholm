@@ -1,11 +1,22 @@
 module kosu.core.types;
-import gfm.math : Vector;
+import gfm.math : Vector, Matrix;
 import bindbc.bgfx;
 
 alias Vector2u = Vector!(ushort, 2);
+alias Vector2i = Vector!(int, 2);
 alias Vector2f = Vector!(float, 2);
+
 alias Vector3f = Vector!(float, 3);
+
 alias Color = Vector!(ubyte, 4);
+alias Matrix4f = Matrix!(float, 4, 4);
+
+struct RectInt {
+    auto tL = Vector2i(0, 0);
+    auto bR = Vector2i(0, 0);
+}
+
+
 
 alias Format = bgfx_vertex_layout_t;
 
@@ -42,6 +53,17 @@ struct Vertex_nt {
     Vector3f pos;
     Vector3f normal;
     Vector2f uv; 
+
+    static Format format;
+}
+/*
+    Only reason for Point (2D) is for nuklear UI, only need one for now
+*/
+
+struct Point_ct {
+    Vector2f pos;
+    Color color;
+    Vector2f uv;
 
     static Format format;
 }
@@ -96,4 +118,18 @@ void formatVertices() {
         bgfx_attrib_t.BGFX_ATTRIB_TEXCOORD0, 2,
         bgfx_attrib_type_t.BGFX_ATTRIB_TYPE_FLOAT, false);
     end(vertexFormats);
+
+    Format*[] pointFormats = [
+        &Point_ct.format
+    ];
+
+    begin(pointFormats);
+    add(pointFormats, bgfx_attrib_t.BGFX_ATTRIB_POSITION, 2,
+        bgfx_attrib_type_t.BGFX_ATTRIB_TYPE_FLOAT);
+    add([&Point_ct.format], bgfx_attrib_t.BGFX_ATTRIB_COLOR0, 4,
+        bgfx_attrib_type_t.BGFX_ATTRIB_TYPE_UINT8, true);
+    add([&Point_ct.format], bgfx_attrib_t.BGFX_ATTRIB_TEXCOORD0, 2,
+        bgfx_attrib_type_t.BGFX_ATTRIB_TYPE_FLOAT, false);
+    end(pointFormats);
+
 }

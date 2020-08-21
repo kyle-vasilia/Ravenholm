@@ -12,6 +12,16 @@ static ushort height = 600;
 
 
 void main() {
+    import kosu.core.context : Context, preload;
+
+    preload();
+    Context ctx = new Context();
+    
+    ctx.open();
+    ctx.load();
+}
+
+void main2() {
     loadExternalLibraries();
 
     SDL_Init(SDL_INIT_VIDEO);

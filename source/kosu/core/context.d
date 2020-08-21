@@ -5,6 +5,22 @@ import bindbc.nuklear;
 
 import kosu.core.types : Vector2u;
 
+/*
+    loads DLL, formats important stuff. 
+*/
+bool preload() {
+    import std.exception : enforce;
+    import kosu.core.types : formatVertices;
+
+    enforce(loadSDL() == sdlSupport, "[ERR::DLL] Couldn't load SDL2");
+    enforce(loadBgfx(), "[ERR::DLL] Couldn't load BGFX");
+    enforce(loadNuklear() == NuklearSupport.Nuklear4, "[ERR::DLL] Couldn't load Nuklear");
+
+    formatVertices();
+
+    return true;
+}
+
 class Context {
 public:
     SDL_Window *winHandle = null; 
@@ -51,12 +67,17 @@ public:
         bgfx_set_platform_data(&pd);
         bgfx_init_t initData;
 
+        auto size = winSize();
+        initData.resolution.width = size.x;
+        initData.resolution.height = size.y;
+
         initData.type = bgfx_renderer_type_t.BGFX_RENDERER_TYPE_OPENGL;
         initData.vendorId = BGFX_PCI_ID_NONE;
         initData.resolution.reset = BGFX_RESET_VSYNC;
         initData.limits.transientVbSize = 65_533 * 4;
         initData.limits.transientIbSize = 65_533 * 8;
         bgfx_init(&initData);
+        refresh();
     }
 
     void refresh() {
