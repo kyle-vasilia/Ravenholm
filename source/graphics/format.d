@@ -44,6 +44,7 @@ struct XYRGBAUVVertex {
 }
 
 void formatVertices() {
+    
     bgfx_vertex_layout_begin(&PosColorVertex.format, 
         bgfx_renderer_type_t.BGFX_RENDERER_TYPE_NOOP);
     bgfx_vertex_layout_add(&PosColorVertex.format,
