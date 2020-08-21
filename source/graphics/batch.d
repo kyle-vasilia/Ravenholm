@@ -16,7 +16,7 @@ struct Batch(T) {
     bgfx_index_buffer_handle_t gpuIndexData;
 
     int numQuads = 0;
-
+    
     void gen() {
         gpuVertexData = bgfx_create_vertex_buffer(
             bgfx_make_ref(cpuVertexData.ptr, cast(uint)((numQuads * 4) * T.sizeof)),

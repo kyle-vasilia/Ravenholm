@@ -92,23 +92,25 @@ void main() {
        
         import std.stdio;
         a += 0.040f;
-        mat4x4f view = mat4f.lookAt(vec3f(32.0f + cos(a) * 10, 4.0f, 32.0f + sin(a) * 10), 
+        /*mat4x4f view = mat4f.lookAt(vec3f(32.0f + cos(a) * 10, 4.0f, 32.0f + sin(a) * 10), 
                     vec3f(32.0f, 0.0f, 32.0f), 
                     vec3f(0.0f, 1.0f, 0.0f)).transposed();
         mat4x4f perspective = mat4x4f.perspective(radians!float(70.0f), 
             cast(float)width/cast(float)height, 0.1f, 100.0f).transposed();
     
         bgfx_set_view_transform(0, view.ptr, perspective.ptr);
-
+        */
         bgfx_touch(0);
 
 
         import bindbc.nuklear;
+    import std.string:toStringz;
 
         if(nk_begin(&t.ctx, "Test", nk_rect(50, 50, 200, 200),
             NK_WINDOW_MOVABLE|NK_WINDOW_BORDER)) {
 
-            
+            nk_label(&t.ctx, "Hello World".toStringz, NK_TEXT_CENTERED);
+            nk_layout_row_dynamic(&t.ctx, 135, 20);
         }
         nk_end(&t.ctx);
 

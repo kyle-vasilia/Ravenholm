@@ -77,9 +77,8 @@ void nk_bgfx_destroy(ref nk_bgfx nkb) {
 void nk_bgfx_render(ref nk_bgfx nkb, vec2i size) {
     const bgfx_caps_t *caps = bgfx_get_caps();
 
-        mat4x4f perspective = mat4x4f.orthographic(0, size.x, 0, size.y, 0.0, 10);
-    bgfx_set_view_transform(0, null, perspective.ptr);
-
+  
+    bgfx_set_view_rect(0, 0, 0, 900, 600);
     nk_buffer vbuf, ebuf;
 
     nk_convert_config config;
@@ -112,11 +111,20 @@ void nk_bgfx_render(ref nk_bgfx nkb, vec2i size) {
 
     bgfx_alloc_transient_vertex_buffer(&tvb, MAX_VERTEX_COUNT, &XYRGBAUVVertex.format);
     bgfx_alloc_transient_index_buffer(&tib, MAX_ELEMENT_COUNT);
+
+
+    void *element = cast(void*)new ubyte[MAX_ELEMENT_COUNT * uint.sizeof];
+
     nk_buffer_init_fixed(&vbuf, tvb.data, cast(nk_size)MAX_VERTEX_MEMORY);
-    nk_buffer_init_fixed(&ebuf, tib.data, cast(nk_size)MAX_ELEMENT_MEMORY);
+    nk_buffer_init_fixed(&ebuf, element, cast(nk_size)(MAX_ELEMENT_COUNT * uint.sizeof));
+    import std.conv;
     
     nk_convert(&nkb.ctx, &nkb.cmds, &vbuf, &ebuf, &config);
-    
+    uint[] slice = (cast(uint*)ebuf.memory.ptr)[0..MAX_ELEMENT_COUNT];
+    import core.stdc.string:memset;
+    memset(tib.data, 0, tib.size);
+    ushort[] rawData = (cast(ushort*)tib.data)[0..MAX_ELEMENT_COUNT];
+    rawData[0..MAX_ELEMENT_COUNT] = to!(ushort[])(slice);
 
     /*
     32-bit buffer to 16-bit?!
@@ -127,7 +135,7 @@ void nk_bgfx_render(ref nk_bgfx nkb, vec2i size) {
     bgfx_set_texture(0, nkb.texHandle, nkb.texture, 0);
     nk_draw_foreach(&nkb.ctx, &nkb.cmds, cast(nk_draw_command_delegate)
         (const nk_draw_command *cmd){
-  
+            
 			//| BGFX_STATE_MSAA
         import std.algorithm:max;
         const ushort xx = cast(ushort)(max(cmd.clip_rect.x, 0.0f));
@@ -136,12 +144,15 @@ void nk_bgfx_render(ref nk_bgfx nkb, vec2i size) {
 		const ushort ch = cast(ushort)(max(cmd.clip_rect.h, 0.0f));
 		bgfx_set_scissor(xx, yy, cw, ch);
 
- 
-        
+   
         bgfx_set_transient_vertex_buffer(cast(byte)0, &tvb, cast(uint)0, cast(uint)MAX_VERTEX_COUNT);
         bgfx_set_transient_index_buffer(&tib, offset, cmd.elem_count);
-        bgfx_submit(0, nkb.shader, 0, 32);
+        
+        bgfx_submit(0, nkb.shader, 0, cast(byte)BGFX_DISCARD_ALL);
         offset += cmd.elem_count;
-
+    
     });
+
+    nk_buffer_clear(&nkb.cmds);
+	nk_clear(&nkb.ctx);
 } 
