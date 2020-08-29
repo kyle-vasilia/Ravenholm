@@ -3,24 +3,65 @@ import std.stdio;
 import bindbc.bgfx;
 import bindbc.sdl;
 import gfm.math;
-import graphics.util;
+
 import graphics.format;
 
 static ushort width = 900;
 static ushort height = 600;
 
-
+import kosu.core.types : RenderState, Matrix4f;
+import kosu.core.context : Context, preload;
+import kosu.event.manager;
+import kosu.draw.util;
+import kosu.draw.nuklear_impl;
 
 void main() {
-    import kosu.core.context : Context, preload;
+    
 
     preload();
     Context ctx = new Context();
-    
+
+    ctx.eventMgr.add(SDL_EventType.SDL_QUIT, (ref const(SDL_Event) e){
+        return false;
+    });
+
+
     ctx.open();
     ctx.load();
-}
 
+    nk_bgfx ui;
+    nk_bgfx_init(ui);
+    
+    RenderState renderState;
+    renderState.state = 
+                  BGFX_STATE_WRITE_RGB
+				| BGFX_STATE_WRITE_A
+				| BGFX_STATE_WRITE_Z
+				| BGFX_STATE_DEPTH_TEST_LESS
+                | BGFX_STATE_CULL_CCW
+				| BGFX_STATE_MSAA;
+
+    renderState.proj = Matrix4f.orthographic(0, 900, 600, 0, 0.1, 100.0f);
+    ctx.drawList ~= (){
+        import std.string : toStringz;
+        import bindbc.nuklear;
+        if(nk_begin(&ui.ctx, "Test", nk_rect(-300, -200, 30, 200),
+            NK_WINDOW_MOVABLE|NK_WINDOW_BORDER)) {
+
+            nk_label(&ui.ctx, "Hello World".toStringz, NK_TEXT_CENTERED);
+            nk_layout_row_dynamic(&ui.ctx, 135, 20);
+        }
+        nk_end(&ui.ctx);
+
+        setRenderState(renderState);
+        nk_bgfx_render(ui, ctx.winSize);
+    };
+
+
+
+    ctx.run();
+}
+version (none)
 void main2() {
     loadExternalLibraries();
 
@@ -78,10 +119,7 @@ void main2() {
     
     
 
-    import ui.nuklear_impl;
-    nk_bgfx t;
-    nk_bgfx_init(t);
-
+   
 
     import asset.loader;
     parseDirInfo("assets/loader");
@@ -115,7 +153,7 @@ void main2() {
 
         import bindbc.nuklear;
     import std.string:toStringz;
-
+/*
         if(nk_begin(&t.ctx, "Test", nk_rect(50, 50, 200, 200),
             NK_WINDOW_MOVABLE|NK_WINDOW_BORDER)) {
 
@@ -127,7 +165,7 @@ void main2() {
 
         nk_bgfx_render(t, vec2i(900, 600));
 
-
+*/
        
 
         /*bgfx_set_texture(0, texUniform, tex, BGFX_SAMPLER_NONE | BGFX_TEXTURE_NONE);

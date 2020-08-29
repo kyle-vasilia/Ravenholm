@@ -4,7 +4,7 @@ import bindbc.bgfx;
 import bindbc.nuklear;
 
 import kosu.core.types : Vector2u;
-
+import kosu.event.manager;
 /*
     loads DLL, formats important stuff. 
 */
@@ -23,7 +23,10 @@ bool preload() {
 
 class Context {
 public:
+    EventManager eventMgr = new EventManager;
     SDL_Window *winHandle = null; 
+    
+    void delegate()[] drawList;
 private:
     bool running_ = false;
 
@@ -74,8 +77,8 @@ public:
         initData.type = bgfx_renderer_type_t.BGFX_RENDERER_TYPE_OPENGL;
         initData.vendorId = BGFX_PCI_ID_NONE;
         initData.resolution.reset = BGFX_RESET_VSYNC;
-        initData.limits.transientVbSize = 65_533 * 4;
-        initData.limits.transientIbSize = 65_533 * 8;
+        initData.limits.transientVbSize = 65_533 * 32;
+        initData.limits.transientIbSize = 65_533 * 32 * 4;
         bgfx_init(&initData);
         refresh();
     }
@@ -88,6 +91,39 @@ public:
             0x303030ff, 1.0f, 0);
         bgfx_set_view_rect(0, 0, 0, size.x, size.y);
         bgfx_touch(0);
+    }
+
+    void doEvent(ref const(SDL_Event) e) {
+        if(!(e.type in eventMgr.registry)) return;
+        foreach(fn; eventMgr.registry[e.type]) {
+            const(bool) res = fn(e);
+            if(res) continue;
+
+            running = false;
+        }
+    }
+
+    void doUpdate(float dt) {
+
+    }
+
+    void doDraw() {
+        foreach(fn; drawList) {
+            fn();
+        }
+        bgfx_touch(0);
+        bgfx_frame(false);
+    }
+
+    void run() {
+        do {
+            SDL_Event e;
+            while(SDL_PollEvent(&e)) {
+                doEvent(e);
+            }
+            doUpdate(1.0f/60.0f);
+            doDraw();
+        } while(running);
     }
 
     final @property Vector2u winSize() {

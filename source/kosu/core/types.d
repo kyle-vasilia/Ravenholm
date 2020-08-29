@@ -16,6 +16,11 @@ struct RectInt {
     auto bR = Vector2i(0, 0);
 }
 
+struct RenderState {
+    Matrix4f view;
+    Matrix4f proj;
+    ulong state;
+}
 
 
 alias Format = bgfx_vertex_layout_t;

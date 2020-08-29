@@ -1,16 +1,10 @@
-module ui.nuklear_impl;
+module kosu.draw.nuklear_impl;
 
 import bindbc.bgfx;
-import bindbc.sdl;
-
-import gfm.math;
-
-import main_core : Core;
-import graphics.format;
-import graphics.util : loadShader;
-
 import bindbc.nuklear;
 
+import kosu.core.types;
+import kosu.draw.util;
 
 struct nk_bgfx {
     nk_context ctx;
@@ -29,6 +23,7 @@ void nk_bgfx_init(ref nk_bgfx nkb) {
     
     nk_init_default(&nkb.ctx, null);
     nk_buffer_init_default(&nkb.cmds);
+   
     
     nkb.texHandle = bgfx_create_uniform("uiTex", 
         bgfx_uniform_type_t.BGFX_UNIFORM_TYPE_SAMPLER, 1);
@@ -58,10 +53,12 @@ void nk_bgfx_init(ref nk_bgfx nkb) {
 
     nk_font_atlas_end(&nkb.atlas, nk_handle_id(nkb.texture.idx), &nkb.nullTex);
     nk_style_set_font(&nkb.ctx, &nkb.font.handle);
+
     nkb.shader = bgfx_create_program(
-        loadShader("gui_backend_vert.bin"), 
-        loadShader("gui_backend_frag.bin"), true
-    );
+        loadShader("gui_backend_vert.bin"),
+        loadShader("gui_backend_frag.bin"),
+        true);
+    
 }
 
 void nk_bgfx_destroy(ref nk_bgfx nkb) {
@@ -74,7 +71,7 @@ void nk_bgfx_destroy(ref nk_bgfx nkb) {
     
 }
 
-void nk_bgfx_render(ref nk_bgfx nkb, vec2i size) {
+void nk_bgfx_render(ref nk_bgfx nkb, Vector2u size) {
     const bgfx_caps_t *caps = bgfx_get_caps();
 
   
@@ -83,14 +80,14 @@ void nk_bgfx_render(ref nk_bgfx nkb, vec2i size) {
 
     nk_convert_config config;
     const nk_draw_vertex_layout_element[] layout = [
-        {NK_VERTEX_POSITION, NK_FORMAT_FLOAT, XYRGBAUVVertex.x.offsetof},
-        {NK_VERTEX_COLOR, NK_FORMAT_R8G8B8A8, XYRGBAUVVertex.rgba.offsetof},
-        {NK_VERTEX_TEXCOORD, NK_FORMAT_FLOAT, XYRGBAUVVertex.u.offsetof},
+        {NK_VERTEX_POSITION, NK_FORMAT_FLOAT, Point_ct.pos.offsetof},
+        {NK_VERTEX_COLOR, NK_FORMAT_R8G8B8A8, Point_ct.color.offsetof},
+        {NK_VERTEX_TEXCOORD, NK_FORMAT_FLOAT, Point_ct.uv.offsetof},
         NK_VERTEX_LAYOUT_END
     ];
     config.vertex_layout = layout.ptr;
-    config.vertex_size = XYRGBAUVVertex.sizeof;
-    config.vertex_alignment = XYRGBAUVVertex.alignof;
+    config.vertex_size = Point_ct.sizeof;
+    config.vertex_alignment = Point_ct.alignof;
     config.null_ = nkb.nullTex;
     config.circle_segment_count = 22;
 	config.curve_segment_count = 22;
@@ -101,15 +98,14 @@ void nk_bgfx_render(ref nk_bgfx nkb, vec2i size) {
     
     immutable int MAX_VERTEX_COUNT = 65536;
     immutable int MAX_VERTEX_MEMORY = 
-        MAX_VERTEX_COUNT * XYRGBAUVVertex.sizeof;
+        MAX_VERTEX_COUNT * Point_ct.sizeof;
     immutable int MAX_ELEMENT_COUNT = MAX_VERTEX_COUNT * 2;
     immutable int MAX_ELEMENT_MEMORY = MAX_ELEMENT_COUNT * ushort.sizeof;
 
-    import std.stdio :writeln;
     bgfx_transient_vertex_buffer_t tvb;
     bgfx_transient_index_buffer_t tib;
 
-    bgfx_alloc_transient_vertex_buffer(&tvb, MAX_VERTEX_COUNT, &XYRGBAUVVertex.format);
+    bgfx_alloc_transient_vertex_buffer(&tvb, MAX_VERTEX_COUNT, &Point_ct.format);
     bgfx_alloc_transient_index_buffer(&tib, MAX_ELEMENT_COUNT);
 
 
@@ -117,11 +113,13 @@ void nk_bgfx_render(ref nk_bgfx nkb, vec2i size) {
 
     nk_buffer_init_fixed(&vbuf, tvb.data, cast(nk_size)MAX_VERTEX_MEMORY);
     nk_buffer_init_fixed(&ebuf, element, cast(nk_size)(MAX_ELEMENT_COUNT * uint.sizeof));
-    import std.conv;
     
+    import std.conv : to;
+    import core.stdc.string : memset;
+
     nk_convert(&nkb.ctx, &nkb.cmds, &vbuf, &ebuf, &config);
     uint[] slice = (cast(uint*)ebuf.memory.ptr)[0..MAX_ELEMENT_COUNT];
-    import core.stdc.string:memset;
+    
     memset(tib.data, 0, tib.size);
     ushort[] rawData = (cast(ushort*)tib.data)[0..MAX_ELEMENT_COUNT];
     rawData[0..MAX_ELEMENT_COUNT] = to!(ushort[])(slice);
@@ -130,7 +128,7 @@ void nk_bgfx_render(ref nk_bgfx nkb, vec2i size) {
     32-bit buffer to 16-bit?!
     */
 
-    uint offset =0;
+    uint offset = 0;
 
     bgfx_set_texture(0, nkb.texHandle, nkb.texture, 0);
     nk_draw_foreach(&nkb.ctx, &nkb.cmds, cast(nk_draw_command_delegate)
